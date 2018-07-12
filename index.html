@@ -18,10 +18,14 @@
 
             width: 100vw;
             height: 100vh;
+
+            background: rgb(76,158,2);
+            background: linear-gradient(324deg, rgba(76,158,2,1) 0%, rgba(83,236,144,1) 100%);
         }
 
         canvas{
-            border: 1px solid black;
+            border: 15px solid white;
+            border-radius: 15px;
         }
     </style>
 </head>
@@ -74,7 +78,7 @@
         }
 
         function drawFruit(){
-            draw(apple.x,apple.y,cellSize,"#FF0000");
+            draw(apple.x,apple.y,cellSize,"#CF000F");
         }
 
         function updateSnake(){
@@ -87,14 +91,14 @@
             else if(snake.currentDir == dir[2]) snake.body[0].x += cellSize;
             else if(snake.currentDir == dir[3]) snake.body[0].y += cellSize;
 
-            draw(snake.body[0].x,snake.body[0].y,cellSize,"#000000");
+            draw(snake.body[0].x,snake.body[0].y,cellSize,"#013243");
 
             for(var i = 1; i < snake.body.length; i++){					
 
                 var posx2;
                 var posy2;
 
-                draw(newPosx,newPosy,cellSize,"#000000");
+                draw(newPosx,newPosy,cellSize,"#013243");
 
                 posx2 = snake.body[i].x;
                 posy2 = snake.body[i].y;
@@ -112,12 +116,19 @@
             ctx.beginPath();
             ctx.fillStyle=color;
             ctx.fillRect(xpos,ypos,size,size);
+        }   
+
+        function paintBoard(){
+            ctx.beginPath();
+            ctx.fillStyle="white";
+            ctx.fillRect(0,0,WIDTH,HEIGHT);
         }
 
         function update(){
             ctx.clearRect(0,0,WIDTH,HEIGHT);
             checkGameOver();
             if(!GameOver){
+                paintBoard();
                 if(snake.body[0].x == apple.x && snake.body[0].y == apple.y){
                     updateFruit();
 
@@ -141,21 +152,36 @@
                 }
                 updateSnake();
             }else{
+                var backColor = "rgb(234, 236, 239)";
                 ctx.beginPath();
-                ctx.fillStyle="#c7ccd8";
+                ctx.fillStyle=backColor;
                 ctx.fillRect(0,0,WIDTH,HEIGHT);
+                canvas.style.borderColor=backColor;
+
+                var grd;
+                
+                grd=ctx.createLinearGradient(0,0,WIDTH,HEIGHT);
+                grd.addColorStop(0,"rgba(76,158,2,1)");
+                grd.addColorStop(1,"rgba(83,236,144,1)");
 
                 ctx.beginPath();
-                ctx.font = "50px Comic Sans MS";
-                ctx.fillStyle = "white";
+                ctx.font = "50px Impact";                
+                ctx.fillStyle = grd;
                 ctx.textAlign = "center";
-                ctx.fillText("Game Over",WIDTH/2,HEIGHT/2);
+                ctx.fillText("Game Over",WIDTH/2,HEIGHT/2);               
+
+                ctx.beginPath();
+                ctx.font = "20px Impact";
+                ctx.fillStyle = grd;
+                ctx.textAlign = "center";
+                ctx.fillText("F5 to restart",WIDTH/2,HEIGHT/2+HEIGHT/12);
             }
         }
+
         function checkGameOver(){
             var snakeHead = snake.body[0];
 
-            if(snakeHead.x <= 0 || snakeHead.y <= 0 || snakeHead.x >= WIDTH || snakeHead.y >= HEIGHT) GameOver = true;
+            if(snakeHead.x < 0 || snakeHead.y < 0 || snakeHead.x >= WIDTH || snakeHead.y >= HEIGHT) GameOver = true;
             if(snake.body.length > 1){
                 for(var i = 1; i < snake.body.length; i++){
                     if(snakeHead.x == snake.body[i].x && snakeHead.y == snake.body[i].y) GameOver = true;
