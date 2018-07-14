@@ -159,7 +159,7 @@
                     snake.body.push({x:niwx,y:niwy});
 
                     //New interval
-                    if(fps > 50){
+                    if(fps > 100){
                         clearInterval(inter);
                         fps-=appleBoost;
                         inter = setInterval(update,fps);
