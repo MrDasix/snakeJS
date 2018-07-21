@@ -28,9 +28,6 @@
             border-radius: 15px;
         }
     </style>
-</head>
-<body>
-    <canvas id="snake" width="500" height="500"></canvas>
 
     <script type="text/javascript">
 
@@ -71,15 +68,19 @@
             HEIGHT = canvas.height;
             updateFruit();
             updateSnake();
+
+            inter = setInterval(update,fps);
         }
 
         function updateFruit(){
             var newx = Math.floor(Math.random() * (WIDTH/cellSize ))*cellSize;
             var newy = Math.floor(Math.random() * (HEIGHT/cellSize ))*cellSize;
             var collision = false;
-            for(var i = 0; i < snake.body.length; i++){
+
+            for(var i = 0; i < snake.body.length; i++){ //check fruit spawn
                 if(snake.body[i].x == newx && snake.body[i].y == newy) collision = true;
             }
+
             if(!collision){
                 apple.x = newx;
                 apple.y = newy;
@@ -141,6 +142,8 @@
             if(!GameOver){
                 move = false;
                 paintBoard();
+                
+                //eats fruit
                 if(snake.body[0].x == apple.x && snake.body[0].y == apple.y){
                     updateFruit();
 
@@ -158,7 +161,7 @@
 
                     snake.body.push({x:niwx,y:niwy});
 
-                    //New interval
+                    //More velocity over points
                     if(fps > 100){
                         clearInterval(inter);
                         fps-=appleBoost;
@@ -169,6 +172,10 @@
                 }
                 updateSnake();
             }else{
+
+                //Game Over screen
+                clearInterval(inter);
+
                 var backColor = "rgb(234, 236, 239)";
                 ctx.beginPath();
                 ctx.fillStyle=backColor;
@@ -198,8 +205,9 @@
         function checkGameOver(){
             var snakeHead = snake.body[0];
 
-            if(snakeHead.x < 0 || snakeHead.y < 0 || snakeHead.x >= WIDTH || snakeHead.y >= HEIGHT) GameOver = true;
-            if(snake.body.length > 1){
+            if(snakeHead.x <= 0 || snakeHead.y <= 0 || snakeHead.x >= WIDTH || snakeHead.y >= HEIGHT) GameOver = true; //check map bounding 
+
+            if(snake.body.length > 1){ //check own snake collision
                 for(var i = 1; i < snake.body.length; i++){
                     if(snakeHead.x == snake.body[i].x && snakeHead.y == snake.body[i].y) GameOver = true;
                 }
@@ -217,11 +225,13 @@
                     move = true;		
                 }			
             }
-
-            inter = setInterval(update,fps);
         }
 
     </script>
 
+</head>
+<body>
+    <canvas id="snake" width="500" height="500"></canvas>
 </body>
 </html>
+
